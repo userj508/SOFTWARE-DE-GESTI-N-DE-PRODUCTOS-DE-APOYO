@@ -2,16 +2,14 @@
 // api/config/database.php
 
 class Database {
-    private $host = '127.0.0.1';
-    private $db_name = 'support_products';
-    private $username;
-    private $password;
+    private $host = 'bbdd.aniasystem.org';
+    private $db_name = 'ddb274045';
+    private $username = 'ddb274045';
+    private $password = 'Contraseña2026!';
     public $conn;
 
     public function __construct() {
-        // Read credentials from env variables if available, otherwise use defaults for local testing
-        $this->username = getenv('DB_USER') ?: 'admin';
-        $this->password = getenv('DB_PASS') ?: 'admin';
+        // Configuracion para DonDominio
     }
 
     public function getConnection() {

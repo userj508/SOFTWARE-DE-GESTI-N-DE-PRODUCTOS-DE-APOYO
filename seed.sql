@@ -1,15 +1,16 @@
 -- Seed data for testing
-USE support_products;
+-- NOTA: Si lo ejecutas en DonDominio, asegúrate de tener seleccionada la base de datos `ddb274045`
 
 INSERT INTO entities (name) VALUES ('Cruz Roja');
 INSERT INTO entities (name) VALUES ('Hospital San Juan');
 
--- password is 'admin' (password_hash is just 'admin' for demo ease based on the logic in auth.php)
+
+-- Contraseña por defecto para todos los usuarios es 'admin' (generada con password_hash de PHP)
 INSERT INTO users (entity_id, name, email, password_hash, role) VALUES
-(NULL, 'Super Admin', 'super@admin.com', 'admin', 'superadmin'),
-(1, 'Admin Cruz Roja', 'admin@cr.com', 'admin', 'entity_admin'),
-(1, 'Tech Cruz Roja', 'tech@cr.com', 'admin', 'technician'),
-(2, 'Admin Hospital', 'admin@hosp.com', 'admin', 'entity_admin');
+(NULL, 'Super Admin', 'super@admin.com', '$2y$10$3MxwDmsmIOpKlP12VEsbvuNnb7gJjEhFznwuDWwWlZeeu1Hgc7fuS', 'superadmin'),
+(1, 'Admin Cruz Roja', 'admin@cr.com', '$2y$10$3MxwDmsmIOpKlP12VEsbvuNnb7gJjEhFznwuDWwWlZeeu1Hgc7fuS', 'entity_admin'),
+(1, 'Tech Cruz Roja', 'tech@cr.com', '$2y$10$3MxwDmsmIOpKlP12VEsbvuNnb7gJjEhFznwuDWwWlZeeu1Hgc7fuS', 'technician'),
+(2, 'Admin Hospital', 'admin@hosp.com', '$2y$10$3MxwDmsmIOpKlP12VEsbvuNnb7gJjEhFznwuDWwWlZeeu1Hgc7fuS', 'entity_admin');
 
 INSERT INTO product_types (entity_id, name, description) VALUES
 (1, 'Silla de ruedas manual', 'Silla standard'),
