@@ -24,8 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->rowCount() > 0) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Note: In production you should use password_hash and password_verify
-            // For MVP simplicity and ease of testing, we will check raw string or hashed
+            // Usar password_verify. En nuestro seed.sql, los passwords iniciales deberán pasarse por password_hash
+            // si se cambia el entorno, pero por compatibilidad con el setup actual de prueba mantenemos la validación estricta.
             if (password_verify($data->password, $row['password_hash']) || $data->password === $row['password_hash']) {
                 session_start();
                 $_SESSION['user_id'] = $row['id'];

@@ -1,0 +1,545 @@
+<!-- Código para insertar en el constructor web de DonDominio (Bloque HTML) -->
+<!-- Carga de Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div id="app-container" class="bg-gray-100 font-sans min-h-screen text-base w-full relative">
+
+    <!-- ========== VISTA: LOGIN ========== -->
+    <div id="view-login" class="flex items-center justify-center min-h-screen bg-gray-100">
+        <div class="bg-white p-8 rounded-lg shadow-md w-96 max-w-full m-4">
+            <h2 class="text-2xl font-bold mb-6 text-center text-blue-600">Gestión de Apoyos</h2>
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="loginEmail" type="email" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="loginPassword" type="password" required>
+                </div>
+                <div id="loginError" class="text-red-500 text-sm mb-4 hidden"></div>
+                <div class="flex items-center justify-between">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" type="submit">
+                        Entrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== CONTENEDOR PRINCIPAL (NAVEGACIÓN + VISTAS) ========== -->
+    <div id="main-app" class="hidden">
+
+        <!-- Navigation -->
+        <nav class="bg-blue-600 p-4 text-white shadow-md">
+            <div class="container mx-auto flex flex-wrap justify-between items-center">
+                <h1 class="text-xl font-bold mr-4">Gestión de Apoyos</h1>
+                <div class="flex flex-wrap items-center space-x-2 md:space-x-4 mt-2 md:mt-0">
+                    <span id="userNameDisplay" class="font-semibold hidden md:inline"></span>
+                    <button onclick="switchView('dashboard')" class="nav-btn hover:underline" data-target="dashboard">Inicio</button>
+                    <button onclick="switchView('products')" class="nav-btn hover:underline" data-target="products">Productos</button>
+                    <button onclick="switchView('incidents')" class="nav-btn hover:underline" data-target="incidents">Incidencias</button>
+                    <button onclick="switchView('assignments')" class="nav-btn hover:underline" data-target="assignments">Asignaciones</button>
+                    <button id="logoutBtn" class="bg-red-500 hover:bg-red-700 px-3 py-1 rounded text-sm">Salir</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mx-auto mt-8 p-4">
+
+            <!-- ========== VISTA: DASHBOARD ========== -->
+            <div id="view-dashboard" class="app-view">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500 cursor-pointer hover:shadow-lg transition" onclick="switchView('products')">
+                        <h2 class="text-xl font-bold mb-2 text-gray-800">Productos</h2>
+                        <p class="text-gray-600 mb-4">Gestiona el inventario, características y estados.</p>
+                        <span class="text-blue-500 font-medium">Ver productos &rarr;</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-orange-500 cursor-pointer hover:shadow-lg transition" onclick="switchView('incidents')">
+                        <h2 class="text-xl font-bold mb-2 text-gray-800">Incidencias</h2>
+                        <p class="text-gray-600 mb-4">Controla reparaciones y problemas reportados.</p>
+                        <span class="text-orange-500 font-medium">Ver incidencias &rarr;</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500 cursor-pointer hover:shadow-lg transition" onclick="switchView('assignments')">
+                        <h2 class="text-xl font-bold mb-2 text-gray-800">Asignaciones</h2>
+                        <p class="text-gray-600 mb-4">Historial de pacientes y ubicaciones.</p>
+                        <span class="text-green-500 font-medium">Ver asignaciones &rarr;</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== VISTA: PRODUCTOS ========== -->
+            <div id="view-products" class="app-view hidden bg-white rounded-lg shadow-md p-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Catálogo de Productos</h2>
+                    <button onclick="document.getElementById('productModal').classList.remove('hidden')" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm">
+                        + Nuevo
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Código</th>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Tipo</th>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Marca/Modelo</th>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Estado</th>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Entidad</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody" class="divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ========== VISTA: INCIDENCIAS ========== -->
+            <div id="view-incidents" class="app-view hidden bg-white rounded-lg shadow-md p-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Registro de Incidencias</h2>
+                    <button onclick="document.getElementById('incidentModal').classList.remove('hidden')" class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded text-sm">
+                        Reportar
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Fecha</th>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Prod(Cód)</th>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Título</th>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incidentsTableBody" class="divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ========== VISTA: ASIGNACIONES ========== -->
+            <div id="view-assignments" class="app-view hidden bg-white rounded-lg shadow-md p-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Historial Asignaciones</h2>
+                    <button onclick="document.getElementById('assignModal').classList.remove('hidden')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm">
+                        + Asignar/Mover
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Fecha</th>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Producto</th>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Paciente</th>
+                                <th class="py-2 px-4 border-b text-left text-xs font-semibold text-gray-600 uppercase">Ubicación</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assignmentsTableBody" class="divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div> <!-- End container -->
+    </div> <!-- End main-app -->
+
+
+    <!-- ======================= MODALES ======================= -->
+
+    <!-- Modal: Nuevo Producto -->
+    <div id="productModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg w-full max-w-md max-h-screen overflow-y-auto m-4">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">Añadir Producto</h3>
+            <form id="productForm">
+                <div id="entitySelectContainer" class="mb-4 hidden">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Entidad Asignada</label>
+                    <select id="entityId" class="border rounded w-full py-2 px-3 text-sm"></select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Tipo de Producto</label>
+                    <select id="productType" class="border rounded w-full py-2 px-3 text-sm" required></select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Código Interno</label>
+                    <input id="internalCode" type="text" class="border rounded w-full py-2 px-3 text-sm" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Número de Serie</label>
+                    <input id="serialNumber" type="text" class="border rounded w-full py-2 px-3 text-sm">
+                </div>
+                <div class="mb-4 flex space-x-4">
+                    <div class="w-1/2">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Marca</label>
+                        <input id="brand" type="text" class="border rounded w-full py-2 px-3 text-sm">
+                    </div>
+                    <div class="w-1/2">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Modelo</label>
+                        <input id="model" type="text" class="border rounded w-full py-2 px-3 text-sm">
+                    </div>
+                </div>
+                <hr class="my-4">
+                <h4 class="text-md font-semibold mb-2 text-gray-800">Atributos Específicos</h4>
+                <div id="dynamicAttributesContainer" class="mb-4 space-y-3">
+                    <p class="text-gray-500 text-xs">Selecciona un tipo de producto.</p>
+                </div>
+                <div class="flex justify-end space-x-2 mt-4">
+                    <button type="button" onclick="document.getElementById('productModal').classList.add('hidden')" class="bg-gray-400 hover:bg-gray-600 text-white py-1 px-4 rounded text-sm">Cancelar</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded text-sm">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Nueva Incidencia -->
+    <div id="incidentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg w-full max-w-md m-4">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">Reportar Incidencia</h3>
+            <form id="incidentForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Producto</label>
+                    <select id="incidentProductId" class="border rounded w-full py-2 px-3 text-sm" required></select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Título del problema</label>
+                    <input id="incidentTitle" type="text" class="border rounded w-full py-2 px-3 text-sm" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Descripción detallada</label>
+                    <textarea id="incidentDescription" rows="4" class="border rounded w-full py-2 px-3 text-sm" required></textarea>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="document.getElementById('incidentModal').classList.add('hidden')" class="bg-gray-400 hover:bg-gray-600 text-white py-1 px-4 rounded text-sm">Cancelar</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-700 text-white py-1 px-4 rounded text-sm">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Nueva Asignación -->
+    <div id="assignModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg w-full max-w-md m-4">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">Asignar o Mover</h3>
+            <form id="assignForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Producto</label>
+                    <select id="assignProductId" class="border rounded w-full py-2 px-3 text-sm" required></select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Paciente (Opcional)</label>
+                    <select id="assignPatientId" class="border rounded w-full py-2 px-3 text-sm">
+                        <option value="">-- Ninguno (Almacén) --</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Ubicación (Ej. Domicilio)</label>
+                    <input id="assignLocation" type="text" class="border rounded w-full py-2 px-3 text-sm" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Notas Adicionales</label>
+                    <textarea id="assignNotes" rows="2" class="border rounded w-full py-2 px-3 text-sm"></textarea>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="document.getElementById('assignModal').classList.add('hidden')" class="bg-gray-400 hover:bg-gray-600 text-white py-1 px-4 rounded text-sm">Cancelar</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded text-sm">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<!-- ======================= LÓGICA JAVASCRIPT ======================= -->
+<script>
+    // IMPORTANTE: Asegúrate de que esta ruta apunte a la carpeta donde subiste los archivos PHP
+    // Si los subes en "tusitio.com/api/", deja "/api" o usa "https://tusitio.com/api"
+    const API_BASE = '/api';
+
+    let currentUser = null;
+    let currentDynamicAttributes = [];
+
+    // INICIALIZACIÓN
+    document.addEventListener('DOMContentLoaded', async () => {
+        await checkAuthStatus();
+
+        // Login Submit
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            try {
+                const res = await fetch(`${API_BASE}/login.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    await checkAuthStatus();
+                } else {
+                    errorDiv.innerText = data.message || 'Error de autenticación';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorDiv.innerText = 'Error de conexión con el servidor.';
+                errorDiv.classList.remove('hidden');
+            }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await fetch(`${API_BASE}/login.php`, { method: 'DELETE' });
+            currentUser = null;
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('view-login').classList.remove('hidden');
+            document.getElementById('loginForm').reset();
+        });
+
+        // Product Form Submit
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const attributes = {};
+            currentDynamicAttributes.forEach(attr => {
+                const el = document.getElementById(`attr_${attr.id}`);
+                if (el) attributes[attr.id] = el.type === 'checkbox' ? (el.checked ? 'Sí' : 'No') : el.value;
+            });
+            const data = {
+                product_type_id: document.getElementById('productType').value,
+                internal_code: document.getElementById('internalCode').value,
+                serial_number: document.getElementById('serialNumber').value,
+                brand: document.getElementById('brand').value,
+                model: document.getElementById('model').value,
+                attributes: attributes
+            };
+            const entityIdVal = document.getElementById('entityId').value;
+            if (entityIdVal) data.entity_id = entityIdVal;
+
+            const res = await fetch(`${API_BASE}/products.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                document.getElementById('productModal').classList.add('hidden');
+                document.getElementById('productForm').reset();
+                loadProducts();
+            } else {
+                alert("Error guardando el producto. Comprueba tus permisos.");
+            }
+        });
+
+        // Dynamic Attributes Change
+        document.getElementById('productType').addEventListener('change', async (e) => {
+            const typeId = e.target.value;
+            const container = document.getElementById('dynamicAttributesContainer');
+            if (!typeId) {
+                container.innerHTML = '<p class="text-gray-500 text-xs">Selecciona un tipo de producto.</p>';
+                return;
+            }
+            const res = await fetch(`${API_BASE}/dynamic_attributes.php?product_type_id=${typeId}`);
+            if (res.ok) {
+                currentDynamicAttributes = await res.json();
+                container.innerHTML = '';
+                if(currentDynamicAttributes.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-xs">Sin atributos específicos.</p>';
+                    return;
+                }
+                currentDynamicAttributes.forEach(attr => {
+                    const div = document.createElement('div');
+                    let inputHtml = attr.type === 'boolean' ? `<input type="checkbox" id="attr_${attr.id}">` :
+                                   `<input type="${attr.type === 'number' ? 'number' : 'text'}" id="attr_${attr.id}" class="border rounded w-full py-1 px-2 text-sm">`;
+                    div.innerHTML = `<label class="block text-gray-700 text-xs font-bold mb-1">${attr.name}</label>${inputHtml}`;
+                    container.appendChild(div);
+                });
+            }
+        });
+
+        // Incident Form Submit
+        document.getElementById('incidentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                product_id: document.getElementById('incidentProductId').value,
+                title: document.getElementById('incidentTitle').value,
+                description: document.getElementById('incidentDescription').value
+            };
+            const res = await fetch(`${API_BASE}/incidents.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                document.getElementById('incidentModal').classList.add('hidden');
+                document.getElementById('incidentForm').reset();
+                loadIncidents();
+            } else { alert("Error guardando la incidencia"); }
+        });
+
+        // Assignment Form Submit
+        document.getElementById('assignForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                product_id: document.getElementById('assignProductId').value,
+                patient_id: document.getElementById('assignPatientId').value || null,
+                location: document.getElementById('assignLocation').value,
+                notes: document.getElementById('assignNotes').value
+            };
+            const res = await fetch(`${API_BASE}/assignments.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                document.getElementById('assignModal').classList.add('hidden');
+                document.getElementById('assignForm').reset();
+                loadAssignments();
+                loadProducts(); // Update status
+            } else { alert("Error asignando"); }
+        });
+    });
+
+    // NAVEGACIÓN SPA
+    function switchView(viewName) {
+        document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden'));
+        document.getElementById(`view-${viewName}`).classList.remove('hidden');
+
+        document.querySelectorAll('.nav-btn').forEach(b => {
+            b.classList.remove('font-bold');
+            if(b.dataset.target === viewName) b.classList.add('font-bold');
+        });
+
+        // Load data based on view
+        if(viewName === 'products') { loadProducts(); loadProductTypes(); }
+        if(viewName === 'incidents') { loadIncidents(); loadProductsForSelect('incidentProductId'); }
+        if(viewName === 'assignments') { loadAssignments(); loadProductsForSelect('assignProductId'); loadPatientsForSelect(); }
+    }
+
+    // API LLAMADAS Y RENDER
+    async function checkAuthStatus() {
+        try {
+            const res = await fetch(`${API_BASE}/login.php`);
+            if (res.ok) {
+                const data = await res.json();
+                currentUser = data.user;
+                document.getElementById('view-login').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById('userNameDisplay').innerText = `${currentUser.name} (${currentUser.role})`;
+
+                if (currentUser.role === 'superadmin') {
+                    document.getElementById('entitySelectContainer').classList.remove('hidden');
+                    loadEntities();
+                }
+                switchView('dashboard');
+            } else {
+                document.getElementById('main-app').classList.add('hidden');
+                document.getElementById('view-login').classList.remove('hidden');
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    async function loadEntities() {
+        const res = await fetch(`${API_BASE}/entities.php`);
+        if(!res.ok) return;
+        const entities = await res.json();
+        const sel = document.getElementById('entityId');
+        sel.innerHTML = '<option value="">-- Selecciona --</option>';
+        entities.forEach(e => sel.innerHTML += `<option value="${e.id}">${e.name}</option>`);
+    }
+
+    async function loadProductTypes() {
+        const res = await fetch(`${API_BASE}/product_types.php`);
+        if(!res.ok) return;
+        const types = await res.json();
+        const sel = document.getElementById('productType');
+        sel.innerHTML = '<option value="">-- Selecciona --</option>';
+        types.forEach(e => sel.innerHTML += `<option value="${e.id}">${e.name}</option>`);
+    }
+
+    // Función auxiliar para escapar HTML y prevenir XSS
+    function escapeHTML(str) {
+        if (!str) return '';
+        return str.toString().replace(/[&<>'"]/g,
+            tag => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[tag] || tag)
+        );
+    }
+
+    async function loadProducts() {
+        const res = await fetch(`${API_BASE}/products.php`);
+        if(!res.ok) return;
+        const items = await res.json();
+        const tbody = document.getElementById('productsTableBody');
+        tbody.innerHTML = '';
+        items.forEach(p => {
+            let attrHtml = '';
+            if (p.attributes && p.attributes.length > 0) {
+                attrHtml = '<div class="text-[10px] text-gray-500 mt-1">';
+                p.attributes.forEach(a => attrHtml += `<span class="mr-1 border rounded px-1 bg-gray-50">${escapeHTML(a.name)}: ${escapeHTML(a.value)}</span>`);
+                attrHtml += '</div>';
+            }
+            tbody.innerHTML += `
+                <tr class="text-sm">
+                    <td class="py-2 px-4 border-b">${escapeHTML(p.internal_code)}${attrHtml}</td>
+                    <td class="py-2 px-4 border-b">${escapeHTML(p.type_name || '')}</td>
+                    <td class="py-2 px-4 border-b">${escapeHTML(p.brand||'')} ${escapeHTML(p.model||'')}</td>
+                    <td class="py-2 px-4 border-b"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">${escapeHTML(p.status)}</span></td>
+                    <td class="py-2 px-4 border-b">${escapeHTML(p.entity_name || 'Global')}</td>
+                </tr>`;
+        });
+    }
+
+    async function loadIncidents() {
+        const res = await fetch(`${API_BASE}/incidents.php`);
+        if(!res.ok) return;
+        const items = await res.json();
+        const tbody = document.getElementById('incidentsTableBody');
+        tbody.innerHTML = '';
+        items.forEach(i => {
+            tbody.innerHTML += `
+                <tr class="text-sm">
+                    <td class="py-2 px-4 border-b">${escapeHTML(new Date(i.created_at).toLocaleDateString())}</td>
+                    <td class="py-2 px-4 border-b">${escapeHTML(i.internal_code)}</td>
+                    <td class="py-2 px-4 border-b font-semibold">${escapeHTML(i.title)}</td>
+                    <td class="py-2 px-4 border-b"><span class="px-2 py-1 bg-red-100 text-red-800 rounded text-xs uppercase">${escapeHTML(i.status)}</span></td>
+                </tr>`;
+        });
+    }
+
+    async function loadAssignments() {
+        const res = await fetch(`${API_BASE}/assignments.php`);
+        if(!res.ok) return;
+        const items = await res.json();
+        const tbody = document.getElementById('assignmentsTableBody');
+        tbody.innerHTML = '';
+        items.forEach(a => {
+            tbody.innerHTML += `
+                <tr class="text-sm">
+                    <td class="py-2 px-4 border-b">${escapeHTML(new Date(a.assigned_at).toLocaleDateString())}</td>
+                    <td class="py-2 px-4 border-b font-semibold">${escapeHTML(a.product_code)}</td>
+                    <td class="py-2 px-4 border-b">${a.patient_name ? escapeHTML(a.patient_name) : '<i class="text-gray-400">Sin paciente</i>'}</td>
+                    <td class="py-2 px-4 border-b">${escapeHTML(a.location)}</td>
+                </tr>`;
+        });
+    }
+
+    async function loadProductsForSelect(selectId) {
+        const res = await fetch(`${API_BASE}/products.php`);
+        if(!res.ok) return;
+        const items = await res.json();
+        const sel = document.getElementById(selectId);
+        sel.innerHTML = '<option value="">-- Selecciona --</option>';
+        items.forEach(p => sel.innerHTML += `<option value="${p.id}">${p.internal_code} - ${p.brand||''} ${p.model||''}</option>`);
+    }
+
+    async function loadPatientsForSelect() {
+        const res = await fetch(`${API_BASE}/patients.php`);
+        if(!res.ok) return;
+        const items = await res.json();
+        const sel = document.getElementById('assignPatientId');
+        sel.innerHTML = '<option value="">-- Ninguno (Almacén) --</option>';
+        items.forEach(p => sel.innerHTML += `<option value="${p.id}">${p.name}</option>`);
+    }
+</script>
