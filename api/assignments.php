@@ -10,7 +10,7 @@ $db = $database->getConnection();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $where = "";
     if ($user['role'] !== 'superadmin') {
-        $where = "WHERE p.entity_id = :entity_id";
+        $where = "WHERE pr.entity_id = :entity_id";
     }
 
     $query = "SELECT a.id, a.location, a.assigned_at, a.returned_at, a.notes,
