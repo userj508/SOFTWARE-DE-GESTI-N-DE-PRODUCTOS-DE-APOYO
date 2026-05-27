@@ -249,7 +249,8 @@
 <!-- ======================= LÓGICA JAVASCRIPT ======================= -->
 <script>
     // Ruta base a los archivos PHP en el servidor DonDominio (codificando espacios para evitar errores HTTP)
-    const API_BASE = 'https://aniasystem.org/SOFTWARE%20DE%20GESTI%C3%93N%20DE%20PRODUCTOS%20DE%20APOYO/API';
+    // Se usa HTTP ya que el dominio aún no tiene certificado SSL configurado
+    const API_BASE = 'http://aniasystem.org/SOFTWARE%20DE%20GESTI%C3%93N%20DE%20PRODUCTOS%20DE%20APOYO/API';
 
     let currentUser = null;
     let currentDynamicAttributes = [];

@@ -5,7 +5,7 @@ class Database {
     private $host = 'bbdd.aniasystem.org';
     private $db_name = 'ddb274045';
     private $username = 'ddb274045';
-    // ¡IMPORTANTE! Reemplaza 'TU_CONTRASENA_AQUI' con la contraseña real (Contraseña2026!) antes de subirlo a DonDominio
+    // ¡IMPORTANTE! Reemplaza 'TU_CONTRASENA_AQUI' con tu contraseña real antes de subirlo a DonDominio
     private $password = 'TU_CONTRASENA_AQUI';
     public $conn;
 
