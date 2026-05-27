@@ -249,8 +249,9 @@
 <!-- ======================= LÓGICA JAVASCRIPT ======================= -->
 <script>
     // Ruta base relativa a los archivos PHP.
-    // Usando una ruta relativa evitamos problemas de CORS si entran con 'www' o sin 'www', o con http/https.
-    const API_BASE = '/SOFTWARE%20DE%20GESTI%C3%93N%20DE%20PRODUCTOS%20DE%20APOYO/API';
+    // ¡IMPORTANTE!: En tu FTP de DonDominio debes renombrar la carpeta para que no tenga espacios ni tildes.
+    // La ruta en FTP debe ser: public / software-apoyo / api
+    const API_BASE = '/software-apoyo/api';
 
     let currentUser = null;
     let currentDynamicAttributes = [];
